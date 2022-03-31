@@ -45,9 +45,6 @@ class TimerService : Service() {
             .setContentIntent(pendingIntent)
             .setOnlyAlertOnce(true)
             .setChannelId("0")
-
-        //start countdown
-//        startForeground(1, notificationBuilder.build())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -72,12 +69,12 @@ class TimerService : Service() {
                         val notification = notificationBuilder.setContentText("0").build()
                         notificationManger.notify(1, notification)
                         Toast.makeText(this@TimerService, "finished", Toast.LENGTH_LONG).show()
+                        stopService()
                     }
                 }.start()
             }
             STOP -> {
-                stopForeground(true)
-                stopSelf()
+                stopService()
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -89,6 +86,11 @@ class TimerService : Service() {
         intent.putExtra(TIME, seconds)
         intent.action = "com.example.timer"
         sendBroadcast(intent)
+    }
+
+    private fun stopService() {
+        stopForeground(true)
+        stopSelf()
     }
 
     companion object {
